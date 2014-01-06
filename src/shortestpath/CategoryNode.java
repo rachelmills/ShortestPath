@@ -15,8 +15,6 @@ import java.util.List;
  */
 public class CategoryNode {
     
-    private int distance;
-    private CategoryNode precedingNode;
     private int id;
     private boolean visited;
     private List adjacencies;
@@ -26,39 +24,9 @@ public class CategoryNode {
     public CategoryNode(int id, boolean b) {
         adjacencies = new ArrayList<>();
         this.id = id;
-    //    this.precedingNode = categoryNode;
-     //   this.distance = steps;
         this.visited = b;
     }
-
-    /**
-     * @return the distance
-     */
-    public int getDistance() {
-        return distance;
-    }
-
-    /**
-     * @param distance the distance to set
-     */
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    /**
-     * @return the parentNodes
-     */
-  //  public List getParentNodes() {
- //       return parentNodes;
- //   }
-
-    /**
-     * @param parentNodes the parentNodes to set
-     */
- //   public void setParentNodes(List parentNodes) {
-//        this.parentNodes = parentNodes;
- //   }
-
+    
     /**
      * @return the id
      */
@@ -85,20 +53,6 @@ public class CategoryNode {
      */
     public void setVisited(boolean visited) {
         this.visited = visited;
-    }
-
-    /**
-     * @return the precedingNode
-     */
-    public CategoryNode getPrecedingNode() {
-        return precedingNode;
-    }
-
-    /**
-     * @param precedingNode the precedingNode to set
-     */
-    public void setPrecedingNode(CategoryNode precedingNode) {
-        this.precedingNode = precedingNode;
     }
 
     /**
