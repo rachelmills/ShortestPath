@@ -52,30 +52,13 @@ public class Graph {
     }
 
     private List<CategoryNode> findPath(Queue<List<CategoryNode>> q, CategoryNode nodeDest) {
-        /*if (!nodeSrc.equals(nodeDest)) {
-         if (!visited.containsKey(nodeSrc.getId())) {
-         visited.put(nodeSrc.getId(), Boolean.TRUE);
-                
-         List<CategoryNode> nodes = q.poll();
-         nodes.add(nodeSrc);
-         q.add(nodes);
-                
-                
-                
-         //                q.addAll(nodeSrc.getAdjacencies());
-         }
-            
-         CategoryNode nextNode = q.poll();
-         findPath(nextNode, nodeDest);
-         }
-         */
         List<CategoryNode> path = null;
         
         while (!q.isEmpty() && path == null) {
             path = checkPath(q.poll(), nodeDest);
         }
         
-        System.out.println("path");
+        System.out.println("Path");
         for (CategoryNode node : path) {
             System.out.print("id = " + node.getId() + "\n" );
         }
