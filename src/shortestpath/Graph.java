@@ -37,31 +37,37 @@ public class Graph {
         return node;
     }
 
-    public void findShortestPath(int src, int dest) {
+    public List<CategoryNode> findShortestPath(int src, int dest) {
         visited = new HashMap<>();
         q = new LinkedList<>();
         CategoryNode nodeSrc = graph.get(src);
         CategoryNode nodeDest = graph.get(dest);
         List<CategoryNode> cn = new LinkedList<>();
         cn.add(nodeSrc);
+        List<CategoryNode> sp = new ArrayList<>();
         if (nodeSrc != null && nodeDest != null) {
             q.add(cn);
 
-            findPath(q, nodeDest);
+            sp = findPath(q, nodeDest);
         }
+        return sp;
     }
 
     private List<CategoryNode> findPath(Queue<List<CategoryNode>> q, CategoryNode nodeDest) {
         List<CategoryNode> path = null;
-        
+
         while (!q.isEmpty() && path == null) {
             path = checkPath(q.poll(), nodeDest);
         }
-        
+
         System.out.println("Path");
-        for (CategoryNode node : path) {
-            System.out.print("id = " + node.getId() + "\n" );
+
+        if (path != null && !path.isEmpty()) {
+            for (CategoryNode node : path) {
+                System.out.print("id = " + node.getId() + "\n");
+            }
         }
+
         return path;
     }
 
@@ -84,5 +90,22 @@ public class Graph {
             return nodes;
         }
         return null;
+    }
+
+    void addAdjacenciesForShortestPath(int srcNode, List<CategoryNode> shortestPath) {
+        System.out.println("Source node id is:  " + srcNode);
+        System.out.print("current adjencies are:  ");
+        for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
+            System.out.print(adj.getId() + ", ");
+        }
+        for (CategoryNode node : shortestPath) {
+            if (!graph.get(srcNode).getAdjacencies().contains(node) && node.getId() != srcNode) {
+                graph.get(srcNode).addAdjacent(node);
+            }
+        }
+        System.out.print("\n new adjacencies are:  ");
+        for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
+            System.out.print(adj.getId() + ", ");
+        }
     }
 }
