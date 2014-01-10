@@ -34,7 +34,10 @@ public class ShortestPath {
     private final List<CategoryNode> shortest;
     private FileOutputStream fos;
     static private Writer out;
-    List<Integer> srcCategories = new ArrayList<>();
+    private List<Integer> srcCategories = new ArrayList<>();
+    List<String> mainTopics = new ArrayList<>();
+    List<Integer> mainTopicIDs = new ArrayList<>();
+
 
     /**
      * @param args the command line arguments
@@ -44,30 +47,25 @@ public class ShortestPath {
 
         ShortestPath sp = new ShortestPath("/Users/rachelmills/Desktop/ClueWeb/WikiParser/Test9.txt");
 
-        // CategoryNode srcNode = new CategoryNode();
-      //  int srcNode = 1642;
-
-        List<Integer> destCategories = new ArrayList<>();
-        destCategories.add(647);
-        destCategories.add(646);
-        destCategories.add(645);
-
+        // add all main topics to list so they can be extracted separately
+        sp.setMainTopics();
+        
         sp.processLineByLine();
-        //      sp.findShortestPath(647, 1660);
+        
         List<CategoryNode> path;
 
-        for (Integer cat : sp.srcCategories) {
+        for (Integer cat : sp.getSrcCategories()) {
             sp.getShortest().clear();
-            for (Integer i : destCategories) {
+            for (Integer i : sp.mainTopicIDs) {
 
                 path = sp.findShortestPath(cat, i);
 
-                if (path != null && ((null == sp.getShortest() || sp.getShortest().isEmpty()) || (path.size() < sp.getShortest().size()))) {
+                if ((path != null && !path.isEmpty()) && ((null == sp.getShortest() || sp.getShortest().isEmpty()) || (path.size() < sp.getShortest().size()))) {
                     sp.getShortest().clear();
                     sp.getShortest().addAll(path);
                 }
-                
             }
+            
             List<CategoryNode> list = sp.addAdjacenciesForShortestPath(cat, sp.getShortest());
             sp.writeAllCategoriesToFile(list, cat);
         }
@@ -75,7 +73,34 @@ public class ShortestPath {
         log("Done.");
     }
 
-    
+    private void setMainTopics() {
+        mainTopics.add("Agriculture");
+        mainTopics.add("Arts");
+        mainTopics.add("Belief");
+        mainTopics.add("Business");
+        mainTopics.add("Chronology");
+        mainTopics.add("Concepts");
+        mainTopics.add("Culture");
+        mainTopics.add("Education");
+        mainTopics.add("Environment");
+        mainTopics.add("Geography");
+        mainTopics.add("Health");
+        mainTopics.add("History");
+        mainTopics.add("Humanities");
+        mainTopics.add("Humans");
+        mainTopics.add("Language");
+        mainTopics.add("Law");
+        mainTopics.add("Life");
+        mainTopics.add("Mathematics");
+        mainTopics.add("Medicine");
+        mainTopics.add("Nature");
+        mainTopics.add("People");
+        mainTopics.add("Politics");
+        mainTopics.add("Science");
+        mainTopics.add("Society");
+        mainTopics.add("Sports");
+        mainTopics.add("Technology");
+    }
     
     public ShortestPath(String filename) {
         g = new Graph();
@@ -119,9 +144,12 @@ public class ShortestPath {
         sc.useDelimiter("#");
 
         int src = sc.nextInt();
-        srcCategories.add(src);
-
-        sc.next();
+        
+        if (mainTopics.contains(sc.next())) {
+            mainTopicIDs.add(src);
+        } else {
+            getSrcCategories().add(src);
+        }
 
         while (sc.hasNext()) {
             next = sc.nextLine().substring(1);
@@ -130,6 +158,7 @@ public class ShortestPath {
                 g.addEdge(src, Integer.parseInt(s));
             }
         }
+        
     }
 
     private static void log(Object aObject) {
@@ -158,5 +187,10 @@ public class ShortestPath {
         return shortest;
     }
 
-    
+    /**
+     * @return the srcCategories
+     */
+    public List<Integer> getSrcCategories() {
+        return srcCategories;
+    }
 }
