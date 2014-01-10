@@ -92,7 +92,7 @@ public class Graph {
         return null;
     }
 
-    void addAdjacenciesForShortestPath(int srcNode, List<CategoryNode> shortestPath) {
+    public List<CategoryNode> addAdjacenciesForShortestPath(int srcNode, List<CategoryNode> shortestPath) {
         System.out.println("Source node id is:  " + srcNode);
         System.out.print("current adjencies are:  ");
         for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
@@ -107,5 +107,6 @@ public class Graph {
         for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
             System.out.print(adj.getId() + ", ");
         }
+        return graph.get(srcNode).getAdjacencies();
     }
 }

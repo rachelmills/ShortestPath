@@ -31,7 +31,7 @@ public class ShortestPath {
     Graph g;
     private final Path fFilePath;
     private final static Charset ENCODING = StandardCharsets.UTF_8;
-    List<CategoryNode> shortest;
+    private final List<CategoryNode> shortest;
     private FileOutputStream fos;
     static private Writer out;
     List<Integer> srcCategories = new ArrayList<>();
@@ -57,31 +57,44 @@ public class ShortestPath {
         List<CategoryNode> path;
 
         for (Integer cat : sp.srcCategories) {
+            sp.getShortest().clear();
             for (Integer i : destCategories) {
 
                 path = sp.findShortestPath(cat, i);
 
-                if (path != null && ((null == sp.shortest || sp.shortest.isEmpty()) || (path.size() < sp.shortest.size()))) {
-                    sp.shortest.clear();
-                    sp.shortest.addAll(path);
+                if (path != null && ((null == sp.getShortest() || sp.getShortest().isEmpty()) || (path.size() < sp.getShortest().size()))) {
+                    sp.getShortest().clear();
+                    sp.getShortest().addAll(path);
                 }
+                
             }
-
-            sp.addAdjacenciesForShortestPath(cat, sp.shortest);
-            sp.writeAllCategoriesToFile(cat);
+            List<CategoryNode> list = sp.addAdjacenciesForShortestPath(cat, sp.getShortest());
+            sp.writeAllCategoriesToFile(list, cat);
         }
 
         log("Done.");
     }
 
+    
+    
     public ShortestPath(String filename) {
         g = new Graph();
         fFilePath = Paths.get(filename);
         shortest = new ArrayList<>();
+        try {
+            fos = new FileOutputStream("ID_Title_Categories_Updated.txt");
+        } catch (FileNotFoundException e) {
+            Logger.getLogger(ShortestPath.class.getName()).log(Level.INFO, "Exception is {0}", e);
+        }
+        try {
+            out = new OutputStreamWriter(fos, "UTF8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(ShortestPath.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void addAdjacenciesForShortestPath(int srcNode, List<CategoryNode> shortestPath) {
-        g.addAdjacenciesForShortestPath(srcNode, shortestPath);
+    private List<CategoryNode> addAdjacenciesForShortestPath(int srcNode, List<CategoryNode> shortestPath) {
+        return g.addAdjacenciesForShortestPath(srcNode, shortestPath);
     }
 
     private List<CategoryNode> findShortestPath(int src, int dest) {
@@ -123,26 +136,27 @@ public class ShortestPath {
         System.out.println(String.valueOf(aObject));
     }
 
-    private void writeAllCategoriesToFile(int srcNode) {
+    private void writeAllCategoriesToFile(List<CategoryNode> list, int srcNode) {
+        
+        System.out.println("\n" + srcNode);
         try {
-            fos = new FileOutputStream("ID_Title_Categories_Updated.txt");
-        } catch (FileNotFoundException e) {
-            Logger.getLogger(ShortestPath.class.getName()).log(Level.INFO, "Exception is {0}", e);
-        }
-        try {
-            out = new OutputStreamWriter(fos, "UTF8");
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(ShortestPath.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(g.graph.get(srcNode).getId());
-        try {
-            out.write(String.valueOf(g.graph.get(srcNode).getId()) + " ");
-            for (CategoryNode node : g.graph.get(srcNode).getAdjacencies()) {
+            out.write(String.valueOf(srcNode) + " ");
+            for (CategoryNode node : list) {
                 out.write(String.valueOf(node.getId()) + " ");
             }
+            out.write("\n");
             out.flush();
         } catch (IOException ex) {
             Logger.getLogger(ShortestPath.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    /**
+     * @return the shortest
+     */
+    public List<CategoryNode> getShortest() {
+        return shortest;
+    }
+
+    
 }
