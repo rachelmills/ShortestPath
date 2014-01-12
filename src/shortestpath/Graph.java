@@ -60,9 +60,8 @@ public class Graph {
             path = checkPath(q.poll(), nodeDest);
         }
 
-        System.out.println("Path");
-
         if (path != null && !path.isEmpty()) {
+            System.out.println("Path");
             for (CategoryNode node : path) {
                 System.out.print("id = " + node.getId() + "\n");
             }
@@ -93,20 +92,36 @@ public class Graph {
     }
 
     public List<CategoryNode> addAdjacenciesForShortestPath(int srcNode, List<CategoryNode> shortestPath) {
-        System.out.println("Source node id is:  " + srcNode);
-        System.out.print("current adjencies are:  ");
-        for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
-            System.out.print(adj.getId() + ", ");
-        }
-        for (CategoryNode node : shortestPath) {
-            if (!graph.get(srcNode).getAdjacencies().contains(node) && node.getId() != srcNode) {
-                graph.get(srcNode).addAdjacent(node);
+        List<Integer> newAdjacencies = null;
+        if (null != graph.get(srcNode)) {
+
+            int countAdj = graph.get(srcNode).getAdjacencies().size();
+            newAdjacencies = new ArrayList<>();
+            
+            for (CategoryNode node : shortestPath) {
+                
+                if (!graph.get(srcNode).getAdjacencies().contains(node) && node.getId() != srcNode) {
+                    graph.get(srcNode).addAdjacent(node);
+                    newAdjacencies.add(node.getId());
+                }
             }
+            int countNewAdj = graph.get(srcNode).getAdjacencies().size();
+            if (countNewAdj != countAdj) {
+                System.out.println("Source node = " + srcNode);
+                System.out.println("All adjacencies:  ");
+                for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
+                    System.out.print(adj.getId() + ", ");
+                }
+                System.out.print("\n");
+                System.out.println("New adjacencies:  ");
+                for (Integer i : newAdjacencies) {
+                    System.out.print(i + ", ");
+                }
+                System.out.print("\n");
+            }
+            return graph.get(srcNode).getAdjacencies();
         }
-        System.out.print("\n new adjacencies are:  ");
-        for (CategoryNode adj : graph.get(srcNode).getAdjacencies()) {
-            System.out.print(adj.getId() + ", ");
-        }
-        return graph.get(srcNode).getAdjacencies();
+        return null;
+
     }
 }

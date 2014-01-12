@@ -38,20 +38,21 @@ public class ShortestPath {
     List<String> mainTopics = new ArrayList<>();
     List<Integer> mainTopicIDs = new ArrayList<>();
 
-
     /**
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
+        //     ShortestPath sp = new ShortestPath("/Users/rachelmills/Desktop/ClueWeb/ShortestPath/ID_Title_Categories.txt");
         ShortestPath sp = new ShortestPath("/Users/rachelmills/Desktop/ClueWeb/WikiParser/Test9.txt");
+     //   ShortestPath sp = new ShortestPath("/home/wikiprep/wikiprep/work/Wikiparser/ID_Title_Categories.txt");
 
         // add all main topics to list so they can be extracted separately
         sp.setMainTopics();
-        
+
         sp.processLineByLine();
-        
+
         List<CategoryNode> path;
 
         for (Integer cat : sp.getSrcCategories()) {
@@ -65,7 +66,7 @@ public class ShortestPath {
                     sp.getShortest().addAll(path);
                 }
             }
-            
+
             List<CategoryNode> list = sp.addAdjacenciesForShortestPath(cat, sp.getShortest());
             sp.writeAllCategoriesToFile(list, cat);
         }
@@ -101,13 +102,13 @@ public class ShortestPath {
         mainTopics.add("Sports");
         mainTopics.add("Technology");
     }
-    
+
     public ShortestPath(String filename) {
         g = new Graph();
         fFilePath = Paths.get(filename);
         shortest = new ArrayList<>();
         try {
-            fos = new FileOutputStream("ID_Title_Categories_Updated.txt");
+            fos = new FileOutputStream("ID_Categories_Updated_Test.txt");
         } catch (FileNotFoundException e) {
             Logger.getLogger(ShortestPath.class.getName()).log(Level.INFO, "Exception is {0}", e);
         }
@@ -144,9 +145,12 @@ public class ShortestPath {
         sc.useDelimiter("#");
 
         int src = sc.nextInt();
-        
-        if (mainTopics.contains(sc.next())) {
+        String topic = sc.next();
+
+        if (mainTopics.contains(topic)) {
             mainTopicIDs.add(src);
+            System.out.println("Topic is:  " + topic);
+            System.out.println("Topic id is:  " + src);
         } else {
             getSrcCategories().add(src);
         }
@@ -158,7 +162,6 @@ public class ShortestPath {
                 g.addEdge(src, Integer.parseInt(s));
             }
         }
-        
     }
 
     private static void log(Object aObject) {
@@ -166,13 +169,15 @@ public class ShortestPath {
     }
 
     private void writeAllCategoriesToFile(List<CategoryNode> list, int srcNode) {
-        
-        System.out.println("\n" + srcNode);
+
         try {
             out.write(String.valueOf(srcNode) + " ");
-            for (CategoryNode node : list) {
-                out.write(String.valueOf(node.getId()) + " ");
+            if (null != list) {
+                for (CategoryNode node : list) {
+                    out.write(String.valueOf(node.getId()) + " ");
+                }
             }
+
             out.write("\n");
             out.flush();
         } catch (IOException ex) {
