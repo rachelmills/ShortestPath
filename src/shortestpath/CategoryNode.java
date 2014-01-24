@@ -16,15 +16,13 @@ import java.util.List;
 public class CategoryNode {
     
     private int id;
-    private boolean visited;
     private List adjacencies;
     
     public CategoryNode() {}
 
-    public CategoryNode(int id, boolean b) {
+    public CategoryNode(int id) {
         adjacencies = new ArrayList<>();
         this.id = id;
-        this.visited = b;
     }
     
     /**
@@ -40,20 +38,6 @@ public class CategoryNode {
     public void setId(int id) {
         this.id = id;
     }   
-
-    /**
-     * @return the visited
-     */
-    public boolean isVisited() {
-        return visited;
-    }
-
-    /**
-     * @param visited the visited to set
-     */
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
 
     /**
      * @return the adjacencies

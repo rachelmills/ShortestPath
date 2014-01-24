@@ -31,7 +31,7 @@ public class Graph {
     private CategoryNode getOrCreateNode(int id) {
         CategoryNode node = graph.get(id);
         if (null == node) {
-            node = new CategoryNode(id, false);
+            node = new CategoryNode(id);
             graph.put(id, node);
         }
         return node;

@@ -31,12 +31,12 @@ public class ShortestPath {
     Graph g;
     private final Path fFilePath;
     private final static Charset ENCODING = StandardCharsets.UTF_8;
-    private final List<CategoryNode> shortest;
+    private final List<CategoryNode> shortest;  // list of category nodes which are the shortest path between source and main topic
     private FileOutputStream fos;
     static private Writer out;
-    private List<Integer> srcCategories = new ArrayList<>();
-    List<String> mainTopics = new ArrayList<>();
-    List<Integer> mainTopicIDs = new ArrayList<>();
+    private List<Integer> srcCategories = new ArrayList<>();  // list of all source categories in wiki
+    List<String> mainTopics = new ArrayList<>(); // string list of all main topics
+    List<Integer> mainTopicIDs = new ArrayList<>(); // list of all main topic ids
 
     /**
      * @param args the command line arguments
@@ -51,10 +51,13 @@ public class ShortestPath {
         // add all main topics to list so they can be extracted separately
         sp.setMainTopics();
 
+        // read in each line from file
         sp.processLineByLine();
 
         List<CategoryNode> path;
 
+        // for every source category in the list of source categories, loop through and find the 
+        // shortest path between that and each main topic.  Add the smallest to the list of shortest paths
         for (Integer cat : sp.getSrcCategories()) {
             sp.getShortest().clear();
             for (Integer i : sp.mainTopicIDs) {
@@ -67,40 +70,27 @@ public class ShortestPath {
                 }
             }
 
+            // If any of the nodes in the shortest path are not in the existing adjencies, add the node
+            // as an adjacency
             List<CategoryNode> list = sp.addAdjacenciesForShortestPath(cat, sp.getShortest());
+            
             sp.writeAllCategoriesToFile(list, cat);
         }
 
         log("Done.");
     }
 
+    // manually add all 26 topics to mainTopics array
     private void setMainTopics() {
-        mainTopics.add("Agriculture");
-        mainTopics.add("Arts");
-        mainTopics.add("Belief");
-        mainTopics.add("Business");
-        mainTopics.add("Chronology");
-        mainTopics.add("Concepts");
-        mainTopics.add("Culture");
-        mainTopics.add("Education");
-        mainTopics.add("Environment");
-        mainTopics.add("Geography");
-        mainTopics.add("Health");
-        mainTopics.add("History");
-        mainTopics.add("Humanities");
-        mainTopics.add("Humans");
-        mainTopics.add("Language");
-        mainTopics.add("Law");
-        mainTopics.add("Life");
-        mainTopics.add("Mathematics");
-        mainTopics.add("Medicine");
-        mainTopics.add("Nature");
-        mainTopics.add("People");
-        mainTopics.add("Politics");
-        mainTopics.add("Science");
-        mainTopics.add("Society");
-        mainTopics.add("Sports");
-        mainTopics.add("Technology");
+        mainTopics.add("Agriculture"); mainTopics.add("Arts"); mainTopics.add("Belief");
+        mainTopics.add("Business"); mainTopics.add("Chronology"); mainTopics.add("Concepts");
+        mainTopics.add("Culture"); mainTopics.add("Education"); mainTopics.add("Environment");
+        mainTopics.add("Geography"); mainTopics.add("Health"); mainTopics.add("History");
+        mainTopics.add("Humanities"); mainTopics.add("Humans"); mainTopics.add("Language");
+        mainTopics.add("Law"); mainTopics.add("Life"); mainTopics.add("Mathematics");
+        mainTopics.add("Medicine"); mainTopics.add("Nature"); mainTopics.add("People");
+        mainTopics.add("Politics"); mainTopics.add("Science"); mainTopics.add("Society");
+        mainTopics.add("Sports"); mainTopics.add("Technology");
     }
 
     public ShortestPath(String filename) {
@@ -108,6 +98,7 @@ public class ShortestPath {
         fFilePath = Paths.get(filename);
         shortest = new ArrayList<>();
         try {
+            // create file for id and categories
             fos = new FileOutputStream("ID_Categories_Updated_Test.txt");
         } catch (FileNotFoundException e) {
             Logger.getLogger(ShortestPath.class.getName()).log(Level.INFO, "Exception is {0}", e);
@@ -137,6 +128,8 @@ public class ShortestPath {
         }
     }
 
+    // process each line after reading it in.  Keep the first integer of each line
+    // which will be the source node
     private void processLine(String nextLine) {
 
         String next;
@@ -147,6 +140,8 @@ public class ShortestPath {
         int src = sc.nextInt();
         String topic = sc.next();
 
+        // if the topic is in the list of main topics add to the list of main topics
+        // otherwise add to the list of source categories
         if (mainTopics.contains(topic)) {
             mainTopicIDs.add(src);
             System.out.println("Topic is:  " + topic);
